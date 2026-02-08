@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio - PokéApp{% endblock %}
+
+{% block body %}
+    <section id="hero" class="hero section dark-background">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
+            <h1>Tu Colección de Pokémon</h1>
+            <p>Descubre, comparte y gestiona tu equipo Pokémon en nuestra plataforma.</p>
+            <div class="d-flex">
+              {% if app.user %}
+                  <a href="#" class="btn-get-started">Mis Pokémon</a>
+              {% else %}
+                  <a href="{{ path('app_register') }}" class="btn-get-started">¡Únete ahora!</a>
+              {% endif %}
+              
+              <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Ver Demo</span></a>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="200">
+            <img src="{{ asset('assets/img/hero-img.png') }}" class="img-fluid animated" alt="">
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock %}

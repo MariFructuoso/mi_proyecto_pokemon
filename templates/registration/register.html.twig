@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro - PokéApp{% endblock %}
+
+{% block body %}
+<section id="register" class="d-flex align-items-center" style="min-height: 80vh; background-color: #f3f5fa;">
+    <div class="container" data-aos="fade-up">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+
+                <div class="card shadow border-0" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        
+                        <div class="section-title pb-3 text-center">
+                            <h2>Crear Cuenta</h2>
+                            <p>Únete como Entrenador</p>
+                        </div>
+
+                        {# Tu lógica de errores #}
+                        {{ form_errors(registrationForm) }}
+
+                        {{ form_start(registrationForm) }}
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #37517e;">Nombre de Entrenador</label>
+                                {{ form_widget(registrationForm.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Ash Ketchum'}}) }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #37517e;">Correo Electrónico</label>
+                                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #37517e;">Contraseña</label>
+                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                                <label class="form-check-label" for="registration_form_agreeTerms">
+                                    Acepto los términos y condiciones
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #47b2e4; border: none; padding: 12px;">
+                                Registrarse
+                            </button>
+                        
+                        {{ form_end(registrationForm) }}
+
+                        <div class="text-center mt-3">
+                            <small>¿Ya tienes cuenta? <a href="{{ path('app_login') }}">Inicia sesión</a></small>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

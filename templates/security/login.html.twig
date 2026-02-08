@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Iniciar Sesión - PokéApp{% endblock %}
+
+{# CAMBIO IMPORTANTE: Usamos 'body' en lugar de 'principal' #}
+{% block body %}
+<section id="login" class="d-flex align-items-center" style="min-height: 80vh; background-color: #f3f5fa;">
+    <div class="container" data-aos="fade-up">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                
+                <div class="card shadow border-0" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        
+                        <div class="section-title pb-3 text-center">
+                            <h2>Bienvenido</h2>
+                            <p>Inicia sesión en tu cuenta</p>
+                        </div>
+
+                        {# Mantenemos tu lógica de errores #}
+                        {% if error %}
+                            <div class="alert alert-danger text-center">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-bold" style="color: #37517e;">Email</label>
+                                {# Tu input antiguo adaptado #}
+                                <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus placeholder="tu@email.com">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-bold" style="color: #37517e;">Contraseña</label>
+                                <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary w-100 rounded-pill" type="submit" style="background: #47b2e4; border: none; padding: 12px;">
+                                    Entrar
+                                </button>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <small>¿No tienes cuenta? <a href="{{ path('app_register') }}">Regístrate aquí</a></small>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
