@@ -5,11 +5,10 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # Aquí le decimos que cargue los usuarios buscando por el campo 'email'
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email  # <--- IMPORTANTE: En el antiguo era username, aquí es email
+                property: email
 
     firewalls:
         dev:
@@ -19,36 +18,39 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # --- ESTILO ANTIGUO (Nativo de Symfony) ---
+            # Login clásico (Formulario)
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                # Le decimos que el campo del formulario se llama '_username' (aunque metan el email)
                 username_parameter: _username
                 password_parameter: _password
-                # Redirección al éxito (Portada)
                 default_target_path: app_home
-            # ------------------------------------------
 
             logout:
                 path: app_logout
-                # A donde ir al salir
                 target: app_home
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
 
     # Control de acceso
     access_control:
-        # Rutas públicas
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        # Solo administradores pueden entrar a rutas que empiecen por /admin
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # Usuarios logueados
-        # - { path: ^/pokemon, roles: ROLE_USER }
+        # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:
         password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
                 cost: 4 # Lowest possible value for bcrypt
