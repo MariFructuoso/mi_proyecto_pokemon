@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favoritos - PokéApp
+{% endblock %}
+
+{% block body %}
+	<main class="main">
+
+		<div class="page-title" data-aos="fade">
+			<div class="container d-lg-flex justify-content-between align-items-center">
+				<h1 class="mb-2 mb-lg-0">Mis Favoritos ❤️</h1>
+				<nav class="breadcrumbs">
+					<ol>
+						<li>
+							<a href="{{ path('app_home') }}">Inicio</a>
+						</li>
+						<li class="current">Favoritos</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<section id="starter-section" class="starter-section section">
+			<div class="container" data-aos="fade-up">
+
+				<div class="section-title text-center">
+					<h2>Colección de Favoritos</h2>
+					<p>Los Pokémon más destacados de la comunidad que has guardado.</p>
+				</div>
+
+				<div class="row gy-4">
+					{% for pokemon in pokemons %}
+						<div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+							<div class="member position-relative text-center p-3 shadow-sm rounded">
+								<div class="member-img mb-3">
+									<img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" class="img-fluid rounded shadow-sm" alt="{{ pokemon.nombre }}" style="aspect-ratio: 1/1; object-fit: contain; background-color: #fff; width: 100%;">
+								</div>
+								<div class="member-info mt-3">
+									<h4>{{ pokemon.nombre }}</h4>
+									<span class="d-block text-muted">{{ pokemon.tipo }}</span>
+									<span class="small text-primary">Entrenador:
+										{{ pokemon.entrenador.nombre }}</span>
+
+									<div class="mt-2">
+										<a href="{{ path('app_pokemon_toggle_like', {id: pokemon.id}) }}" class="btn btn-danger btn-sm rounded-pill px-3">
+											<i class="bi bi-heart-fill"></i>
+											Quitar
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<div class="col-12 text-center">
+							<p class="text-muted">No tienes favoritos. Ve a
+								<a href="{{ path('app_pokemon_global') }}">Explorar</a>
+								para añadir algunos.</p>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		</section>
+
+	</main>
+{% endblock %}

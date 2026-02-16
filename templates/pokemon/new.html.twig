@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Pokémon - PokéApp{% endblock %}
+
+{% block body %}
+<main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Capturar Pokémon</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{{ path('app_home') }}">Inicio</a></li>
+            <li><a href="{{ path('app_pokemon_mios') }}">Mis Pokémon</a></li>
+            <li class="current">Nuevo</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section id="starter-section" class="starter-section section">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                        <h4 class="text-primary fw-bold"><i class="bi bi-plus-circle"></i> Datos del Registro</h4>
+                        <p class="text-muted small">Rellena la ficha técnica del Pokémon avistado.</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nombre</label>
+                                {{ form_widget(form.nombre) }}
+                                <div class="text-danger small">{{ form_errors(form.nombre) }}</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Tipo Elemental</label>
+                                    {{ form_widget(form.tipo) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Foto del Avistamiento</label>
+                                    {{ form_widget(form.imagen) }}
+                                    <div class="form-text small">Formatos: JPG, PNG. Máx 5MB.</div>
+                                    <div class="text-danger small">{{ form_errors(form.imagen) }}</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Descripción / Notas</label>
+                                {{ form_widget(form.descripcion) }}
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{{ path('app_pokemon_mios') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+                                <button type="submit" class="btn btn-primary px-4">Guardar Pokémon</button>
+                            </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+      </div>
+    </section>
+
+</main>
+{% endblock %}

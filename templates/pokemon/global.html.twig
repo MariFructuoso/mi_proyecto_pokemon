@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Explorar - PokéApp
+{% endblock %}
+
+{% block body %}
+	<main class="main">
+		<div class="page-title" data-aos="fade">
+			<div class="container d-lg-flex justify-content-between align-items-center">
+				<h1 class="mb-2 mb-lg-0">Explorar Mundo Pokémon</h1>
+				<nav class="breadcrumbs">
+					<ol>
+						<li>
+							<a href="{{ path('app_home') }}">Inicio</a>
+						</li>
+						<li class="current">Global</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<section id="blog" class="blog section">
+			<div class="container">
+				<div class="row gy-4 posts-list">
+
+					{% for pokemon in pokemons %}
+						<div class="col-xl-4 col-lg-6">
+							<article>
+								<div class="post-img">
+									<img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" alt="{{ pokemon.nombre }}" class="img-fluid w-100 rounded-top" style="aspect-ratio: 1/1; object-fit: contain; background-color: #f3f5fa;">
+								</div>
+
+								<p class="post-category">{{ pokemon.tipo }}</p>
+
+								<h2 class="title">
+									<a href="#">{{ pokemon.nombre }}</a>
+								</h2>
+
+								<div class="d-flex align-items-center">
+									<div class="post-meta">
+										<p class="post-author">Entrenador:
+											<strong>{{ pokemon.entrenador.nombre }}</strong>
+										</p>
+									</div>
+								</div>
+
+								<div class="mt-3 text-end">
+									{% set esFavorito = app.user and app.user.favoritos.contains(pokemon) %}
+									<a href="{{ path('app_pokemon_toggle_like', {id: pokemon.id}) }}" class="btn {{ esFavorito ? 'btn-danger' : 'btn-outline-danger' }}">
+										<i class="bi {{ esFavorito ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+										{{ esFavorito ? 'Te gusta' : 'Me gusta' }}
+									</a>
+								</div>
+
+							</article>
+						</div>
+					{% else %}
+						<div class="alert alert-info">Aún no hay avistamientos de Pokémon.</div>
+					{% endfor %}
+
+				</div>
+			</div>
+		</section>
+	</main>
+{% endblock %}

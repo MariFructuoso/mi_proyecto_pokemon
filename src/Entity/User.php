@@ -47,9 +47,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Pokemon::class, mappedBy: 'entrenador')]
     private Collection $pokemon;
 
+    /**
+     * @var Collection<int, Pokemon>
+     */
+    #[ORM\ManyToMany(targetEntity: Pokemon::class, inversedBy: 'fans')]
+    private Collection $favoritos;
+
     public function __construct()
     {
         $this->pokemon = new ArrayCollection();
+        $this->favoritos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -161,6 +168,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $pokemon->setEntrenador(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pokemon>
+     */
+    public function getFavoritos(): Collection
+    {
+        return $this->favoritos;
+    }
+
+    public function addFavorito(Pokemon $favorito): static
+    {
+        if (!$this->favoritos->contains($favorito)) {
+            $this->favoritos->add($favorito);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorito(Pokemon $favorito): static
+    {
+        $this->favoritos->removeElement($favorito);
+
         return $this;
     }
 }
