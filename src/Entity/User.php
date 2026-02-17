@@ -113,13 +113,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Limpieza de datos sensibles temporales.
-     * OBLIGATORIO tenerlo, aunque esté vacío.
-     */
     public function eraseCredentials(): void
     {
-        // Si tuvieras una variable $plainPassword, la borrarías aquí.
+    
     }
 
     public function getNombre(): ?string

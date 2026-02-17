@@ -1,90 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestión - PokéApp
-{% endblock %}
+{% block title %}Mis Pokémon - PokéApp{% endblock %}
 
 {% block body %}
-	<main class="main">
+<main class="main">
 
-		<div class="page-title" data-aos="fade">
-			<div class="container d-lg-flex justify-content-between align-items-center">
-				<h1 class="mb-2 mb-lg-0">Mi Centro de Mando</h1>
-				<nav class="breadcrumbs">
-					<ol>
-						<li>
-							<a href="{{ path('app_home') }}">Inicio</a>
-						</li>
-						<li class="current">Mis Pokémon</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Mi Centro de Mando</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{{ path('app_home') }}">Inicio</a></li>
+            <li class="current">Mis Pokémon</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
 
-		<section id="service-details" class="service-details section">
-			<div class="container">
-				<div class="row gy-5">
+    <section id="service-details" class="service-details section">
+      <div class="container">
+        <div class="row gy-4">
 
-					<div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="services-list">
+              <a href="#" class="active"><i class="bi bi-arrow-right-circle"></i> Ver mi equipo</a>
+              <a href="{{ path('app_pokemon_new') }}"><i class="bi bi-plus-circle"></i> Registrar Nuevo Pokémon</a>
+              <a href="{{ path('app_pokemon_favoritos') }}"><i class="bi bi-heart"></i> Ver Favoritos</a>
+            </div>
+            <div class="help-box d-flex flex-column justify-content-center align-items-center">
+              <i class="bi bi-headset help-icon"></i>
+              <h4>¿Necesitas Ayuda?</h4>
+              <p>Gestiona tu equipo con cuidado. Si borras un Pokémon, no podrás recuperarlo.</p>
+            </div>
+          </div>
 
-						<div class="service-box">
-							<h4>Panel de Entrenador</h4>
-							<div class="services-list">
-								<a href="#" class="active">
-									<i class="bi bi-arrow-right-circle"></i>
-									Ver mi equipo</a>
-								<a href="{{ path('app_pokemon_new') }}">
-									<i class="bi bi-plus-circle"></i>
-									Registrar Nuevo Pokémon</a>
-								<a href="{{ path('app_pokemon_favoritos') }}">
-									<i class="bi bi-heart"></i>
-									Ver Favoritos</a>
-							</div>
-						</div>
+          <div class="col-lg-8 ps-lg-5" data-aos="fade-up" data-aos-delay="200">
+            
+            <h3>Mi Equipo Pokémon ({{ pokemons|length }})</h3>
+            <p>Aquí tienes la lista completa de los Pokémon que has registrado.</p>
 
-						<div class="help-box d-flex flex-column justify-content-center align-items-center">
-							<i class="bi bi-headset help-icon"></i>
-							<h4>¿Necesitas Ayuda?</h4>
-							<p>Gestiona tu equipo con cuidado. Si borras un Pokémon, no podrás recuperarlo.</p>
-						</div>
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="row gy-4">
+                {% for pokemon in pokemons %}
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        
+                        <img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" 
+                             class="card-img-top" 
+                             alt="{{ pokemon.nombre }}" 
+                             style="aspect-ratio: 1/1; object-fit: contain; background-color: #f8f9fa;">
+                        
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">{{ pokemon.nombre }}</h5>
+                            <span class="badge bg-primary mb-2">{{ pokemon.tipo }}</span>
+                            <p class="card-text text-muted small">{{ pokemon.descripcion|slice(0, 80) }}...</p>
+                            
+                            <div class="d-flex justify-content-between mt-3">
+                                <a href="{{ path('app_pokemon_edit', {'id': pokemon.id}) }}" class="btn btn-warning btn-sm text-white fw-bold">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
 
-					</div>
+                                <form method="post" action="{{ path('app_pokemon_delete', {'id': pokemon.id}) }}" onsubmit="return confirm('¿Seguro que quieres liberar a {{ pokemon.nombre }}?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pokemon.id) }}">
+                                    <button class="btn btn-danger btn-sm fw-bold">
+                                        <i class="bi bi-trash"></i> Liberar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                             <small class="text-muted"><i class="bi bi-heart-fill text-danger"></i> {{ pokemon.fans|length }} Fans</small>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            No tienes ningún Pokémon registrado. ¡Sal a capturar!
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-					<div class="col-lg-8 ps-lg-5" data-aos="fade-up" data-aos-delay="200">
-						<h3>Mi Equipo Pokémon ({{ pokemons|length }})</h3>
-						<p>Aquí tienes la lista completa de los Pokémon que has registrado.</p>
+          </div>
 
-						<div class="row">
-							{% for pokemon in pokemons %}
-								<div class="col-md-6 mb-4">
-									<div class="card border-0 shadow-sm">
-										<img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" class="card-img-top" alt="{{ pokemon.nombre }}" style="aspect-ratio: 1/1; object-fit: contain; background-color: #f8f9fa;">
+        </div>
+      </div>
+    </section>
 
-										<div class="card-body">
-											<h5 class="fw-bold">{{ pokemon.nombre }}</h5>
-											<span class="badge bg-primary mb-2">{{ pokemon.tipo }}</span>
-											<p class="small text-muted">{{ pokemon.descripcion|slice(0,60) }}...</p>
-
-											<div class="d-flex justify-content-between">
-												<a href="{{ path('app_pokemon_edit', {'id': pokemon.id}) }}" class="btn btn-warning btn-sm text-white">Editar</a>
-
-												<form method="post" action="{{ path('app_pokemon_delete', {'id': pokemon.id}) }}" onsubmit="return confirm('¿Liberar a este Pokémon?');">
-													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pokemon.id) }}">
-													<button class="btn btn-danger btn-sm">Liberar</button>
-												</form>
-											</div>
-										</div>
-									</div>
-								</div>
-							{% else %}
-								<div class="alert alert-warning">No tienes Pokémon. ¡Usa el menú lateral para crear uno!</div>
-							{% endfor %}
-						</div>
-
-					</div>
-
-				</div>
-			</div>
-		</section>
-
-	</main>
+</main>
 {% endblock %}

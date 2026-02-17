@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
 
 #[Route('/pokemon')]
 class PokemonController extends AbstractController
@@ -96,17 +99,40 @@ class PokemonController extends AbstractController
     }
 
     #[Route('/favorito/{id}', name: 'app_pokemon_toggle_like')]
-    public function toggleLike(Pokemon $pokemon, EntityManagerInterface $entityManager, Request $request): Response
+    public function toggleLike(Pokemon $pokemon, EntityManagerInterface $entityManager, Request $request, MailerInterface $mailer): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
+        $dueno = $pokemon->getEntrenador();
 
         if ($user->getFavoritos()->contains($pokemon)) {
             $user->removeFavorito($pokemon);
         } else {
             $user->addFavorito($pokemon);
+
+            if ($dueno && $dueno !== $user) {
+                $email = (new Email())
+                    ->from(new Address('no-reply@pokeapp.com', 'PokéApp Bot'))
+                    ->to($dueno->getEmail())
+                    ->subject('¡A alguien le gusta tu Pokémon!')
+                    ->text('Hola ' . $dueno->getNombre() . ",\n\n" .
+                           'El entrenador ' . $user->getNombre() . ' le ha dado Me Gusta a tu Pokémon ' . $pokemon->getNombre() . ".\n\n" .
+                           '¡Sigue así!'
+                    )
+                    ->html('<p>Hola <strong>' . $dueno->getNombre() . '</strong>,</p>' .
+                           '<p>El entrenador <strong>' . $user->getNombre() . '</strong> le ha dado Me Gusta a tu Pokémon <strong style="color:red;">' . $pokemon->getNombre() . '</strong>.</p>' .
+                           '<p>¡Enhorabuena!</p>'
+                    );
+
+                try {
+                    $mailer->send($email);
+                } catch (\Exception $e) {
+                }
+            }
         }
+        
         $entityManager->flush();
         
         return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_pokemon_global'));
@@ -155,10 +181,15 @@ class PokemonController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        if (!$pokemon->getFans()->isEmpty()) {
+            $this->addFlash('error', 'No puedes liberar a ' . $pokemon->getNombre() . ' porque tiene fans (Me gusta) asociados.');
+            return $this->redirectToRoute('app_pokemon_mios');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$pokemon->getId(), $request->request->get('_token'))) {
             $entityManager->remove($pokemon);
             $entityManager->flush();
-            $this->addFlash('danger', 'El Pokémon ha sido liberado.');
+            $this->addFlash('success', 'El Pokémon ha sido liberado correctamente.');
         }
 
         return $this->redirectToRoute('app_pokemon_mios', [], Response::HTTP_SEE_OTHER);

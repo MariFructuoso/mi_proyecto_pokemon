@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mi Perfil - PokéApp{% endblock %}
+
+{% block body %}
+<main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Perfil de Entrenador</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{{ path('app_home') }}">Inicio</a></li>
+            <li class="current">Mi Perfil</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container" data-aos="fade-up">
+        
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : 'success' }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row gy-4">
+            
+            <div class="col-lg-5">
+                <div class="card shadow border-0 text-center p-4">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-center">
+                            {% if user.foto %}
+                                <img src="{{ asset('uploads/avatars/' ~ user.foto) }}" class="rounded-circle shadow-sm border" style="width: 100px; height: 100px;">
+                            {% else %}
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; font-size: 40px;">
+                                    {{ user.nombre|slice(0,1)|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <h3 class="fw-bold text-primary">{{ user.nombre }}</h3>
+                        <p class="text-muted">{{ user.email }}</p>
+                        <hr>
+                        
+                        <h5 class="mt-4 mb-3 fw-bold">Cambiar Foto</h5>
+                        <p class="small text-muted">Máx 10KB. Se ajustará a 100x100px.</p>
+                        
+                        {{ form_start(formAvatar) }}
+                            <div class="mb-3">
+                                {{ form_widget(formAvatar.foto) }}
+                                <div class="text-danger small mt-1">{{ form_errors(formAvatar.foto) }}</div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary w-100">Actualizar Foto</button>
+                        {{ form_end(formAvatar) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card shadow border-0 p-4">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold mb-4"><i class="bi bi-shield-lock"></i> Seguridad</h4>
+                        
+                        {{ form_start(formPassword) }}
+                            <div class="mb-3">
+                                <label class="form-label">Nueva Contraseña</label>
+                                {{ form_widget(formPassword.plainPassword.first) }}
+                                <div class="text-danger small">{{ form_errors(formPassword.plainPassword.first) }}</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Repetir Nueva Contraseña</label>
+                                {{ form_widget(formPassword.plainPassword.second) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary px-4">Actualizar Contraseña</button>
+                        {{ form_end(formPassword) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </section>
+
+</main>
+{% endblock %}
