@@ -3,62 +3,84 @@
 {% block title %}Registro - PokéApp{% endblock %}
 
 {% block body %}
-<section id="register" class="d-flex align-items-center" style="min-height: 80vh; background-color: #f3f5fa;">
-    <div class="container" data-aos="fade-up">
+<main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Registro de Entrenador</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{{ path('app_home') }}">Inicio</a></li>
+            <li class="current">Registro</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section id="contact" class="contact section">
+      <div class="container" data-aos="fade-up">
 
         <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-8">
+          <div class="col-lg-6">
 
-                <div class="card shadow border-0" style="border-radius: 15px;">
-                    <div class="card-body p-5">
-                        
-                        <div class="section-title pb-3 text-center">
-                            <h2>Crear Cuenta</h2>
-                            <p>Únete como Entrenador</p>
-                        </div>
-
-                        {# Tu lógica de errores #}
-                        {{ form_errors(registrationForm) }}
-
-                        {{ form_start(registrationForm) }}
-                            
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #37517e;">Nombre de Entrenador</label>
-                                {{ form_widget(registrationForm.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Ash Ketchum'}}) }}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #37517e;">Correo Electrónico</label>
-                                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #37517e;">Contraseña</label>
-                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-
-                            <div class="mb-3 form-check">
-                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                                <label class="form-check-label" for="registration_form_agreeTerms">
-                                    Acepto los términos y condiciones
-                                </label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 rounded-pill" style="background: #47b2e4; border: none; padding: 12px;">
-                                Registrarse
-                            </button>
-                        
-                        {{ form_end(registrationForm) }}
-
-                        <div class="text-center mt-3">
-                            <small>¿Ya tienes cuenta? <a href="{{ path('app_login') }}">Inicia sesión</a></small>
-                        </div>
-
+            <div class="card shadow border-0" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-body p-4 p-md-5">
+                
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-primary">¡Únete a la aventura!</h3>
+                        <p class="text-muted">Crea tu cuenta para capturar y gestionar tus Pokémon.</p>
                     </div>
-                </div>
 
+                    {{ form_start(registrationForm) }}
+                        
+                        <div class="row gy-3">
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-uppercase text-secondary">Nombre de Entrenador</label>
+                                {{ form_widget(registrationForm.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Ash Ketchum'}}) }}
+                                <div class="text-danger small mt-1">{{ form_errors(registrationForm.nombre) }}</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-uppercase text-secondary">Correo Electrónico</label>
+                                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'nombre@ejemplo.com'}}) }}
+                                <div class="text-danger small mt-1">{{ form_errors(registrationForm.email) }}</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-uppercase text-secondary">Contraseña</label>
+                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': '******'}}) }}
+                                <div class="text-danger small mt-1">{{ form_errors(registrationForm.plainPassword) }}</div>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <div class="bg-light p-3 rounded text-center border">
+                                    <label class="form-label fw-bold small text-uppercase text-secondary mb-2">Verificación de Seguridad</label>
+                                    {{ form_widget(registrationForm.captcha) }}
+                                    <div class="text-danger small mt-1">{{ form_errors(registrationForm.captcha) }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-center mt-4">
+                                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 w-100 fw-bold">Registrarse</button>
+                            </div>
+
+                        </div>
+
+                    {{ form_end(registrationForm) }}
+
+                    <div class="mt-4 text-center border-top pt-3">
+                        <p class="small text-muted mb-0">¿Ya tienes cuenta? <a href="{{ path('app_login') }}" class="fw-bold text-primary">Inicia sesión</a></p>
+                    </div>
+
+                </div>
             </div>
+
+          </div>
         </div>
-    </div>
-</section>
+
+      </div>
+    </section>
+
+</main>
 {% endblock %}

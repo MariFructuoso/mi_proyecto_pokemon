@@ -16,28 +16,31 @@ class PokemonRepository extends ServiceEntityRepository
         parent::__construct($registry, Pokemon::class);
     }
 
-//    /**
-//     * @return Pokemon[] Returns an array of Pokemon objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function buscarPorFiltros(?string $texto, ?string $tipo, ?string $fechaDesde, ?string $fechaHasta): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.fechaCreacion', 'DESC'); 
 
-//    public function findOneBySomeField($value): ?Pokemon
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($texto) {
+            $qb->andWhere('(p.nombre LIKE :texto OR p.descripcion LIKE :texto)')
+               ->setParameter('texto', '%' . $texto . '%');
+        }
+
+        if ($tipo) {
+            $qb->andWhere('p.tipo = :tipo')
+               ->setParameter('tipo', $tipo);
+        }
+
+        if ($fechaDesde) {
+            $qb->andWhere('p.fechaCreacion >= :desde')
+               ->setParameter('desde', new \DateTime($fechaDesde));
+        }
+
+        if ($fechaHasta) {
+            $qb->andWhere('p.fechaCreacion <= :hasta')
+               ->setParameter('hasta', new \DateTime($fechaHasta . ' 23:59:59'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

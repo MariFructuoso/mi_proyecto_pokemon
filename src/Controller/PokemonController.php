@@ -15,20 +15,27 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/pokemon')]
 class PokemonController extends AbstractController
 {
-    // ==========================================
-    // 1. GLOBAL -> Usa estilo BLOG
-    // ==========================================
     #[Route('/global', name: 'app_pokemon_global', methods: ['GET'])]
-    public function global(PokemonRepository $pokemonRepository): Response
+    public function global(PokemonRepository $pokemonRepository, Request $request): Response
     {
+        $texto = $request->query->get('q');      
+        $tipo = $request->query->get('tipo');    
+        $desde = $request->query->get('desde');  
+        $hasta = $request->query->get('hasta');  
+
+        $pokemons = $pokemonRepository->buscarPorFiltros($texto, $tipo, $desde, $hasta);
+
         return $this->render('pokemon/global.html.twig', [
-            'pokemons' => $pokemonRepository->findAll(),
+            'pokemons' => $pokemons,
+            'filtros' => [
+                'q' => $texto,
+                'tipo' => $tipo,
+                'desde' => $desde,
+                'hasta' => $hasta
+            ]
         ]);
     }
 
-    // ==========================================
-    // 2. MIS POKEMON -> Usa estilo SERVICE DETAILS (Con Sidebar)
-    // ==========================================
     #[Route('/mis-pokemon', name: 'app_pokemon_mios', methods: ['GET'])]
     public function misPokemon(): Response
     {
@@ -41,9 +48,7 @@ class PokemonController extends AbstractController
         ]);
     }
 
-    // ==========================================
-    // 3. FAVORITOS -> Usa estilo STARTER PAGE (Limpio)
-    // ==========================================
+
     #[Route('/favoritos', name: 'app_pokemon_favoritos', methods: ['GET'])]
     public function favoritos(): Response
     {
@@ -56,9 +61,6 @@ class PokemonController extends AbstractController
         ]);
     }
 
-    // ==========================================
-    // CREAR NUEVO (Lógica igual a ImagenController)
-    // ==========================================
     #[Route('/new', name: 'app_pokemon_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -87,17 +89,12 @@ class PokemonController extends AbstractController
             return $this->redirectToRoute('app_pokemon_mios', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Reutilizamos la plantilla de 'mios' o una simple para el formulario
         return $this->render('pokemon/new.html.twig', [
             'pokemon' => $pokemon,
             'form' => $form,
         ]);
     }
 
-    // ... (Mantén aquí las funciones edit, delete y toggleLike que hicimos antes) ...
-    // ¿Quieres que te las pegue de nuevo o ya las tienes?
-    
-    // Solo por si acaso, pego el Toggle Like para que no se pierda:
     #[Route('/favorito/{id}', name: 'app_pokemon_toggle_like')]
     public function toggleLike(Pokemon $pokemon, EntityManagerInterface $entityManager, Request $request): Response
     {
@@ -115,13 +112,10 @@ class PokemonController extends AbstractController
         return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_pokemon_global'));
     }
 
-    // ==========================================
-    // EDITAR (Adaptado de tu ImagenController)
-    // ==========================================
+
     #[Route('/{id}/edit', name: 'app_pokemon_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Pokemon $pokemon, EntityManagerInterface $entityManager): Response
     {
-        // Seguridad: Solo el dueño puede editar su Pokémon
         if ($pokemon->getEntrenador() !== $this->getUser()) {
             throw $this->createAccessDeniedException('No tienes permiso para editar este Pokémon.');
         }
@@ -131,21 +125,16 @@ class PokemonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $file */
-            // Usamos 'imagen' que es como se llama en tu PokemonType y DB
             $file = $form->get('imagen')->getData();
 
             if ($file) {
-                // 1. Generar nombre único
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
                 
-                // 2. Mover a la carpeta configurada
                 $file->move($this->getParameter('pokemon_directory'), $fileName);
                 
-                // 3. Actualizar el nombre en la base de datos
                 $pokemon->setImagen($fileName);
             }
 
-            // Guardar cambios
             $entityManager->flush();
 
             $this->addFlash('success', '¡Pokémon actualizado correctamente!');
@@ -162,7 +151,6 @@ class PokemonController extends AbstractController
     #[Route('/{id}', name: 'app_pokemon_delete', methods: ['POST'])]
     public function delete(Request $request, Pokemon $pokemon, EntityManagerInterface $entityManager): Response
     {
-        // Seguridad: Solo el dueño o un ADMIN
         if ($pokemon->getEntrenador() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
         }

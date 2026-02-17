@@ -1,65 +1,123 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Explorar - PokéApp
-{% endblock %}
+{% block title %}Explorar - PokéApp{% endblock %}
 
 {% block body %}
-	<main class="main">
-		<div class="page-title" data-aos="fade">
-			<div class="container d-lg-flex justify-content-between align-items-center">
-				<h1 class="mb-2 mb-lg-0">Explorar Mundo Pokémon</h1>
-				<nav class="breadcrumbs">
-					<ol>
-						<li>
-							<a href="{{ path('app_home') }}">Inicio</a>
-						</li>
-						<li class="current">Global</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
+    <main class="main">
+        
+        <div class="page-title" data-aos="fade">
+            <div class="container d-lg-flex justify-content-between align-items-center">
+                <h1 class="mb-2 mb-lg-0">Explorar Mundo Pokémon</h1>
+                <nav class="breadcrumbs">
+                    <ol>
+                        <li><a href="{{ path('app_home') }}">Inicio</a></li>
+                        <li class="current">Global</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
 
-		<section id="blog" class="blog section">
-			<div class="container">
-				<div class="row gy-4 posts-list">
+        <section id="blog" class="blog section">
+            <div class="container">
 
-					{% for pokemon in pokemons %}
-						<div class="col-xl-4 col-lg-6">
-							<article>
-								<div class="post-img">
-									<img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" alt="{{ pokemon.nombre }}" class="img-fluid w-100 rounded-top" style="aspect-ratio: 1/1; object-fit: contain; background-color: #f3f5fa;">
-								</div>
+                <div class="row mb-5" data-aos="fade-up">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0 p-4 bg-light">
+                            <form method="get" action="{{ path('app_pokemon_global') }}">
+                                <div class="row g-3 align-items-end">
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold small text-muted text-uppercase">Buscar</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                            {# Usamos app.request.query.get para leer lo que hay en la URL #}
+                                            <input type="text" name="q" class="form-control border-start-0" placeholder="Nombre o descripción..." value="{{ app.request.query.get('q') }}">
+                                        </div>
+                                    </div>
 
-								<p class="post-category">{{ pokemon.tipo }}</p>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold small text-muted text-uppercase">Tipo Elemental</label>
+                                        <select name="tipo" class="form-select">
+                                            <option value="">Todos los Tipos</option>
+                                            {% set tipoActual = app.request.query.get('tipo') %}
+                                            <option value="Fuego" {{ tipoActual == 'Fuego' ? 'selected' : '' }}>Fuego 🔥</option>
+                                            <option value="Agua" {{ tipoActual == 'Agua' ? 'selected' : '' }}>Agua 💧</option>
+                                            <option value="Planta" {{ tipoActual == 'Planta' ? 'selected' : '' }}>Planta 🌿</option>
+                                            <option value="Eléctrico" {{ tipoActual == 'Eléctrico' ? 'selected' : '' }}>Eléctrico ⚡</option>
+                                            <option value="Psíquico" {{ tipoActual == 'Psíquico' ? 'selected' : '' }}>Psíquico 🔮</option>
+                                            <option value="Roca" {{ tipoActual == 'Roca' ? 'selected' : '' }}>Roca 🪨</option>
+                                            <option value="Normal" {{ tipoActual == 'Normal' ? 'selected' : '' }}>Normal ⭐</option>
+                                        </select>
+                                    </div>
 
-								<h2 class="title">
-									<a href="#">{{ pokemon.nombre }}</a>
-								</h2>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold small text-muted text-uppercase">Fecha Creación</label>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <span class="input-group-text">Desde</span>
+                                            <input type="date" name="desde" class="form-control" value="{{ app.request.query.get('desde') }}">
+                                        </div>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">Hasta&nbsp;</span>
+                                            <input type="date" name="hasta" class="form-control" value="{{ app.request.query.get('hasta') }}">
+                                        </div>
+                                    </div>
 
-								<div class="d-flex align-items-center">
-									<div class="post-meta">
-										<p class="post-author">Entrenador:
-											<strong>{{ pokemon.entrenador.nombre }}</strong>
-										</p>
-									</div>
-								</div>
+                                    <div class="col-md-2 d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary fw-bold">Filtrar</button>
+                                        <a href="{{ path('app_pokemon_global') }}" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gy-4 posts-list">
 
-								<div class="mt-3 text-end">
-									{% set esFavorito = app.user and app.user.favoritos.contains(pokemon) %}
-									<a href="{{ path('app_pokemon_toggle_like', {id: pokemon.id}) }}" class="btn {{ esFavorito ? 'btn-danger' : 'btn-outline-danger' }}">
-										<i class="bi {{ esFavorito ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-										{{ esFavorito ? 'Te gusta' : 'Me gusta' }}
-									</a>
-								</div>
+                    {% for pokemon in pokemons %}
+                        <div class="col-xl-4 col-lg-6">
+                            <article>
+                                <div class="post-img">
+                                    <img src="{{ asset('uploads/pokemon/' ~ pokemon.imagen) }}" alt="{{ pokemon.nombre }}" class="img-fluid w-100 rounded-top" style="aspect-ratio: 1/1; object-fit: contain; background-color: #f3f5fa;">
+                                </div>
 
-							</article>
-						</div>
-					{% else %}
-						<div class="alert alert-info">Aún no hay avistamientos de Pokémon.</div>
-					{% endfor %}
+                                <p class="post-category">{{ pokemon.tipo }}</p>
 
-				</div>
-			</div>
-		</section>
-	</main>
+                                <h2 class="title">
+                                    <a href="#">{{ pokemon.nombre }}</a>
+                                </h2>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="post-meta">
+                                        <p class="post-author">Entrenador:
+                                            <strong>{{ pokemon.entrenador.nombre }}</strong>
+                                        </p>
+                                        <p class="post-date">
+                                            <time datetime="2022-01-01">{{ pokemon.fechaCreacion ? pokemon.fechaCreacion|date('d/m/Y') : 'Fecha desconocida' }}</time>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 text-end">
+                                    {% set esFavorito = app.user and app.user.favoritos.contains(pokemon) %}
+                                    <a href="{{ path('app_pokemon_toggle_like', {id: pokemon.id}) }}" class="btn {{ esFavorito ? 'btn-danger' : 'btn-outline-danger' }}">
+                                        <i class="bi {{ esFavorito ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                        {{ esFavorito ? 'Te gusta' : 'Me gusta' }}
+                                    </a>
+                                </div>
+
+                            </article>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info text-center py-5">
+                                <h4><i class="bi bi-search"></i> No se encontraron Pokémon</h4>
+                                <p>Intenta cambiar los filtros de búsqueda.</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock %}

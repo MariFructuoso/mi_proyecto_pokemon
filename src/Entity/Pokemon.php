@@ -27,11 +27,15 @@ class Pokemon
     #[ORM\Column(length: 255)]
     private ?string $tipo = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $fecha_creacion = null;
-
     #[ORM\ManyToOne(inversedBy: 'pokemon')]
     private ?User $entrenador = null;
+
+    // --- CORRECCIÓN AQUÍ ---
+    // Usamos una sola variable.
+    // 'name' conecta con tu base de datos (fecha_creacion)
+    // $fechaCreacion es para usarlo en PHP
+    #[ORM\Column(name: 'fecha_creacion', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $fechaCreacion = null;
 
     /**
      * @var Collection<int, User>
@@ -42,6 +46,8 @@ class Pokemon
     public function __construct()
     {
         $this->fans = new ArrayCollection();
+        // Inicializamos la fecha al crear el objeto para evitar errores de NULL
+        $this->fechaCreacion = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -97,14 +103,15 @@ class Pokemon
         return $this;
     }
 
+    // --- GETTER Y SETTER DE LA FECHA (Solo una vez) ---
     public function getFechaCreacion(): ?\DateTimeImmutable
     {
-        return $this->fecha_creacion;
+        return $this->fechaCreacion;
     }
 
-    public function setFechaCreacion(\DateTimeImmutable $fecha_creacion): static
+    public function setFechaCreacion(\DateTimeImmutable $fechaCreacion): static
     {
-        $this->fecha_creacion = $fecha_creacion;
+        $this->fechaCreacion = $fechaCreacion;
 
         return $this;
     }

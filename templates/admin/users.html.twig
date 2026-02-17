@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestión de Usuarios - Admin{% endblock %}
+
+{% block body %}
+<main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Gestión de Usuarios</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{{ path('app_home') }}">Inicio</a></li>
+            <li class="current">Administración</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container" data-aos="fade-up">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="fw-bold me-2">Filtrar:</span>
+                <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Todos</a>
+                <a href="{{ path('app_admin_users', {'rol': 'admin'}) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Solo Admins</a>
+            </div>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3">Nombre</th>
+                                <th class="py-3">Email</th>
+                                <th class="py-3">Rol</th>
+                                <th class="text-end pe-4 py-3">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">
+                                    {{ user.nombre }}
+                                </td>
+                                
+                                <td>{{ user.email }}</td>
+                                
+                                <td>
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        <span class="badge bg-primary rounded-pill px-3">Administrador</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill px-3">Entrenador</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <td class="text-end pe-4">
+                                    {% if user != app.user %}
+                                        <a href="{{ path('app_admin_toggle_role', {'id': user.id}) }}" class="btn btn-sm btn-outline-primary me-2">
+                                            Cambiar Rol
+                                        </a>
+
+                                        <form method="post" action="{{ path('app_admin_delete_user', {'id': user.id}) }}" class="d-inline-block" onsubmit="return confirm('¿Seguro que quieres eliminar a {{ user.nombre }}?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <button class="btn btn-sm btn-danger">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-muted small fst-italic">Tu usuario</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">No hay usuarios registrados.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </section>
+
+</main>
+{% endblock %}

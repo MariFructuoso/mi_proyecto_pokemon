@@ -1455,6 +1455,36 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     generate_final_classes?: bool|Param, // Default: true
  *     generate_final_entities?: bool|Param, // Default: false
  * }
+ * @psalm-type GregwarCaptchaConfig = array{
+ *     length?: scalar|Param|null, // Default: 5
+ *     width?: scalar|Param|null, // Default: 130
+ *     height?: scalar|Param|null, // Default: 50
+ *     font?: scalar|Param|null, // Default: "/Users/marifructuosoguerrero/Documents/2 DAW/Desarrollo Servidor/Proyecto/mi_proyecto_pokemon/vendor/gregwar/captcha-bundle/DependencyInjection/../Generator/Font/captcha.ttf"
+ *     keep_value?: scalar|Param|null, // Default: false
+ *     charset?: scalar|Param|null, // Default: "abcdefhjkmnprstuvwxyz23456789"
+ *     as_file?: scalar|Param|null, // Default: false
+ *     as_url?: scalar|Param|null, // Default: false
+ *     reload?: scalar|Param|null, // Default: false
+ *     image_folder?: scalar|Param|null, // Default: "captcha"
+ *     web_path?: scalar|Param|null, // Default: "%kernel.project_dir%/public"
+ *     gc_freq?: scalar|Param|null, // Default: 100
+ *     expiration?: scalar|Param|null, // Default: 60
+ *     quality?: scalar|Param|null, // Default: 50
+ *     invalid_message?: scalar|Param|null, // Default: "Bad code value"
+ *     bypass_code?: scalar|Param|null, // Default: null
+ *     whitelist_key?: scalar|Param|null, // Default: "captcha_whitelist_key"
+ *     humanity?: scalar|Param|null, // Default: 0
+ *     distortion?: scalar|Param|null, // Default: true
+ *     max_front_lines?: scalar|Param|null, // Default: null
+ *     max_behind_lines?: scalar|Param|null, // Default: null
+ *     interpolation?: scalar|Param|null, // Default: true
+ *     text_color?: list<scalar|Param|null>,
+ *     background_color?: list<scalar|Param|null>,
+ *     background_images?: list<scalar|Param|null>,
+ *     disabled?: scalar|Param|null, // Default: false
+ *     ignore_all_effects?: scalar|Param|null, // Default: false
+ *     session_key?: scalar|Param|null, // Default: "captcha"
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1468,6 +1498,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     twig_extra?: TwigExtraConfig,
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
+ *     gregwar_captcha?: GregwarCaptchaConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1484,6 +1515,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
+ *         gregwar_captcha?: GregwarCaptchaConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1498,6 +1530,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         gregwar_captcha?: GregwarCaptchaConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1513,6 +1546,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         gregwar_captcha?: GregwarCaptchaConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

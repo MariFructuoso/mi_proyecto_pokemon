@@ -1,0 +1,6 @@
+gregwar_captcha:
+    charset: '1234567890' # Solo números como pide la práctica
+    length: 5             # Longitud del código (5 cifras está bien)
+    width: 200            # Ancho de la imagen
+    height: 50            # Alto de la imagen
+    keep_value: false     # Si fallas, cambia el código (seguridad)
